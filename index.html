@@ -302,13 +302,13 @@
         Resume
       </h1>
       <div class="action-buttons">
-        <!-- View button (scrolls to preview, but it's always visible) -->
+        <!-- View button (scrolls to preview) -->
         <button class="btn btn-outline" id="viewBtn" title="Scroll to resume preview">
           <i class="fas fa-eye"></i> View
         </button>
-        <!-- Download button (triggers download of this very page as .html, but also shows a "resume" version) -->
-        <a class="btn btn-primary" id="downloadBtn" download="My_Resume.html" title="Download resume as HTML">
-          <i class="fas fa-download"></i> Download
+        <!-- Download button: now points to the PDF in the root folder -->
+        <a class="btn btn-primary" id="downloadBtn" href="resume.pdf" download="resume.pdf" title="Download PDF resume">
+          <i class="fas fa-file-pdf"></i> Download PDF
         </a>
       </div>
     </div>
@@ -398,7 +398,7 @@
             </div>
           </div>
         </div>
-        <!-- tiny footer note (just for style) -->
+        <!-- footer note -->
         <div style="margin-top: 2rem; font-size: 0.75rem; color: #8196b7; border-top: 1px solid #e6edf8; padding-top: 1rem; display: flex; justify-content: space-between; flex-wrap: wrap;">
           <span><i class="fas fa-print"></i>  ·  updated April 2026</span>
           <span><i class="fas fa-check-circle" style="color: #2a6df4;"></i>  open to opportunities</span>
@@ -412,7 +412,7 @@
     (function() {
       "use strict";
 
-      // 1. VIEW button: smoothly scroll to the resume preview
+      // VIEW button: smoothly scroll to the resume preview
       const viewBtn = document.getElementById('viewBtn');
       const resumeView = document.getElementById('resumeView');
 
@@ -423,99 +423,11 @@
         });
       }
 
-      // 2. DOWNLOAD button: create a clean HTML file with the exact resume content.
-      //    We want the downloaded file to be a standalone resume – with same styling,
-      //    but without the "View" button and with a "Download" button that downloads itself.
-      //    We'll generate a full HTML document from the current resume preview.
-      const downloadBtn = document.getElementById('downloadBtn');
-
-      downloadBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-
-        // grab the current resume preview HTML (the .resume-preview element)
-        const previewElement = document.querySelector('.resume-preview');
-        if (!previewElement) return;
-
-        // clone the preview so we don't mess with the live DOM
-        const clonePreview = previewElement.cloneNode(true);
-
-        // remove any interactive elements that shouldn't be in the downloaded resume
-        // (but we keep the content pure – the download version will NOT have the header buttons)
-        // we also remove the tiny footer's "print" icon or extra stuff? we keep it as is.
-
-        // Build a minimal but complete HTML document.
-        const styles = document.querySelector('style').innerHTML;
-
-        // get the computed styles for the preview? we'll just rely on embedded styles.
-        // we'll also include FontAwesome link.
-        const htmlContent = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alexandra Chen · Resume</title>
-  <!-- Font Awesome 6 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <style>
-    /* copy all styles from the original */
-    ${styles}
-    /* overwrite a few things for download-only version */
-    body {
-      background: #f4f7fc;
-      padding: 2rem 1.5rem;
-    }
-    .resume-card {
-      max-width: 1100px;
-      margin: 0 auto;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-    }
-    .resume-header {
-      display: none;   /* hide the header with buttons */
-    }
-    .resume-body {
-      padding: 2.5rem 2.5rem 2.8rem;
-    }
-    .resume-preview {
-      background: #fafcff;
-      border-radius: 24px;
-      padding: 2rem 2.2rem;
-      border: 1px solid #e9eff6;
-    }
-    .btn, .action-buttons {
-      display: none;
-    }
-    /* adjust for print-friendly */
-    @media print {
-      body { background: white; padding: 0.5in; }
-      .resume-card { box-shadow: none; }
-    }
-  </style>
-</head>
-<body>
-  <div class="resume-card">
-    <div class="resume-body">
-      ${clonePreview.outerHTML}
-    </div>
-  </div>
-</body>
-</html>`;
-
-        // create a Blob with the HTML content
-        const blob = new Blob([htmlContent], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-
-        // trigger download
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Alexandra_Chen_Resume.html';  // filename
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      });
-
+      // The download button is now a direct link to "resume.pdf" in the root.
+      // No extra JS needed — the href handles it.
+      // But we keep the fallback or any extra logic if needed.
+      // (Optional) we could add a small check, but it's clean now.
     })();
   </script>
-
 </body>
 </html>
